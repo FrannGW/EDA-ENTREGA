@@ -1,0 +1,185 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "gcc@latest": {
+      "last_modified": "2025-10-07T08:41:47Z",
+      "resolved": "github:NixOS/nixpkgs/bce5fe2bb998488d8e7e7856315f90496723793c#gcc15",
+      "source": "devbox-search",
+      "version": "15.2.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/cc4iq0sa1nv4nz0800kz8kzlak7gf8y7-gcc-wrapper-15.2.0",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/kr49hbv3mxzjrmh22fw4s9bdxh0n31hi-gcc-wrapper-15.2.0-man",
+              "default": true
+            },
+            {
+              "name": "info",
+              "path": "/nix/store/7mgz6kqy46yxlmmyiab8mcbls612kxwm-gcc-wrapper-15.2.0-info"
+            }
+          ],
+          "store_path": "/nix/store/cc4iq0sa1nv4nz0800kz8kzlak7gf8y7-gcc-wrapper-15.2.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/7qjaz55ph916j93zahsgk923xk5qq98k-gcc-wrapper-15.2.0",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/ykvdndq5bx8xnr458nl5lbp168b1v5pg-gcc-wrapper-15.2.0-man",
+              "default": true
+            },
+            {
+              "name": "info",
+              "path": "/nix/store/m0fhx07l90jig2jn2m9n1z0cf7n18zgs-gcc-wrapper-15.2.0-info"
+            }
+          ],
+          "store_path": "/nix/store/7qjaz55ph916j93zahsgk923xk5qq98k-gcc-wrapper-15.2.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ammjkphxn7xnrrixgg757q89i9d7qj09-gcc-wrapper-15.2.0",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/cdjkw0srxm74mfd6kk64nnqjx8zcchi7-gcc-wrapper-15.2.0-man",
+              "default": true
+            },
+            {
+              "name": "info",
+              "path": "/nix/store/7qs8kvj942n6f0i059jsa73n0rz2i10i-gcc-wrapper-15.2.0-info"
+            }
+          ],
+          "store_path": "/nix/store/ammjkphxn7xnrrixgg757q89i9d7qj09-gcc-wrapper-15.2.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/nxiy2ygm0wsrydwfqmdj05h3iqyac6d3-gcc-wrapper-15.2.0",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/ybhdda2yff0nzghm59rxssj0rqrjipyi-gcc-wrapper-15.2.0-man",
+              "default": true
+            },
+            {
+              "name": "info",
+              "path": "/nix/store/ab4461r1r9k8yl22iiif4w6mi746zr7n-gcc-wrapper-15.2.0-info"
+            }
+          ],
+          "store_path": "/nix/store/nxiy2ygm0wsrydwfqmdj05h3iqyac6d3-gcc-wrapper-15.2.0"
+        }
+      }
+    },
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2025-10-16T06:36:44Z",
+      "resolved": "github:NixOS/nixpkgs/3cbe716e2346710d6e1f7c559363d14e11c32a43?lastModified=1760596604"
+    },
+    "gnumake@latest": {
+      "last_modified": "2025-10-07T08:41:47Z",
+      "resolved": "github:NixOS/nixpkgs/bce5fe2bb998488d8e7e7856315f90496723793c#gnumake",
+      "source": "devbox-search",
+      "version": "4.4.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/308q7v3aaiw4d1wjijy7xcszlgnfadb6-gnumake-4.4.1",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/dkvrvkwhb259fgmndacwafvvh4bnli2p-gnumake-4.4.1-man",
+              "default": true
+            },
+            {
+              "name": "info",
+              "path": "/nix/store/sm48wfivmhljjpyhfnmzpf563jgj33mz-gnumake-4.4.1-info"
+            }
+          ],
+          "store_path": "/nix/store/308q7v3aaiw4d1wjijy7xcszlgnfadb6-gnumake-4.4.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/vcrz2m3vg65ipcsng5il3lppdjkzjq3l-gnumake-4.4.1",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/vrsjc5zm54xvjryf3w8cln538lj6ni4x-gnumake-4.4.1-man",
+              "default": true
+            },
+            {
+              "name": "debug",
+              "path": "/nix/store/0d4xkinli9gx5axy7mgn1x42lz17q94m-gnumake-4.4.1-debug"
+            },
+            {
+              "name": "info",
+              "path": "/nix/store/0vls7lnzb6lzv0r558qc4q8jg958isc3-gnumake-4.4.1-info"
+            }
+          ],
+          "store_path": "/nix/store/vcrz2m3vg65ipcsng5il3lppdjkzjq3l-gnumake-4.4.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/20mqrgg6bv22w6sis9ljssgqjf7byqby-gnumake-4.4.1",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/jdfjjl6lxr3011z74phfbdjzcmlllfw5-gnumake-4.4.1-man",
+              "default": true
+            },
+            {
+              "name": "info",
+              "path": "/nix/store/my7zgdi3sjdrzx0rvyn67zs9nsk8m6bp-gnumake-4.4.1-info"
+            }
+          ],
+          "store_path": "/nix/store/20mqrgg6bv22w6sis9ljssgqjf7byqby-gnumake-4.4.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/501f7gwkgv25pa4fv9xvixrhvgv1875k-gnumake-4.4.1",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/lj5ln02qqgpd5g0n0pm1s3c5lazkcn54-gnumake-4.4.1-man",
+              "default": true
+            },
+            {
+              "name": "debug",
+              "path": "/nix/store/h6nv4xwxfy6cjq8iklnd11all52550f6-gnumake-4.4.1-debug"
+            },
+            {
+              "name": "info",
+              "path": "/nix/store/qn84s5mi367wlpifmxpam2vmdqmjnqba-gnumake-4.4.1-info"
+            }
+          ],
+          "store_path": "/nix/store/501f7gwkgv25pa4fv9xvixrhvgv1875k-gnumake-4.4.1"
+        }
+      }
+    }
+  }
+}
