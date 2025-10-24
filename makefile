@@ -1,34 +1,40 @@
+# Makefile para Obligatorio EDA 2025 - Versión Windows
+# Compilador y flags
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++11 -g
-OBJS = main.o archivo.o version.o
 
-all: main.exe
+# Lista de todos los archivos objeto
+OBJETOS = main.o archivo.o version.o texto.o arbol_versiones.o
 
-main.exe: $(OBJS)
-	$(CXX) -o main.exe $(OBJS)
+# Archivo ejecutable principal
+TARGET = main.exe
 
-todo: all
+# Regla principal - compilar todo
+$(TARGET): $(OBJETOS)
+	$(CXX) -o $(TARGET) $(OBJETOS)
 
-run: main.exe
-	./main.exe
-
-main.o: main.cpp archivo.hpp
+# Dependencias de cada archivo objeto
+main.o: main.cpp archivo.hpp version.hpp texto.hpp linea.hpp definiciones.hpp arbol_versiones.hpp estructuras_comunes.hpp
 	$(CXX) $(CXXFLAGS) -c main.cpp
 
-archivo.o: archivo.cpp archivo.hpp version.hpp texto.hpp linea.hpp definiciones.hpp
+archivo.o: archivo.cpp archivo.hpp version.hpp texto.hpp linea.hpp definiciones.hpp arbol_versiones.hpp estructuras_comunes.hpp
 	$(CXX) $(CXXFLAGS) -c archivo.cpp
 
-version.o: version.cpp version.hpp texto.hpp linea.hpp
+version.o: version.cpp version.hpp texto.hpp linea.hpp definiciones.hpp estructuras_comunes.hpp
 	$(CXX) $(CXXFLAGS) -c version.cpp
 
+texto.o: texto.cpp texto.hpp linea.hpp definiciones.hpp
+	$(CXX) $(CXXFLAGS) -c texto.cpp
+
+arbol_versiones.o: arbol_versiones.cpp arbol_versiones.hpp version.hpp texto.hpp linea.hpp definiciones.hpp estructuras_comunes.hpp
+	$(CXX) $(CXXFLAGS) -c arbol_versiones.cpp
+
+# Reglas para limpieza (Windows)
 clean:
-	del -f *.o main.exe 2>nul || true
+	del /Q *.o $(TARGET) 2>nul || true
 
-info:
-	@echo "Archivos fuente:"
-	@dir *.cpp *.hpp 2>nul | findstr /V "Directory"
+# Regla para compilar todo
+todo: $(TARGET)
 
-help:
-	@echo "Comandos: make, make todo, make run, make clean, make info, make help"
-
-.PHONY: all todo run clean info help
+# Reglas phony
+.PHONY: clean clean-all todo

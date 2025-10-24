@@ -3,7 +3,9 @@
 
 #include "definiciones.hpp"
 #include <stdbool.h>
+#include "estructuras_comunes.hpp"
 #include "version.hpp"
+#include "arbol_versiones.hpp"
 
 struct nodo_archivo {
     char* nombre;
