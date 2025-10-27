@@ -8,28 +8,36 @@
 #include <iostream>
 #include <string.h>
 #include "version.hpp"
+#include "arbol_versiones.hpp"
 
 using namespace std;
 
 #define NO_IMPLEMENTADA_FUNC ((void)0, NO_IMPLEMENTADA)
 
 
+
 Archivo CrearArchivo(char* nombre)
 {
-    // Crea el archivo con el nombre especificado y lo inicializa sin contenido (vacío).
-    // El archivo creado es retornado.
-    // Esta operación se ejecuta al inicio de una sesión de trabajo con un archivo.
-
-    Archivo a = new (nodo_archivo);
-
-    if (a == NULL) {
-        return NULL; // en caso de error
+    // Verificar que el nombre no sea NULL
+    if (nombre == NULL) {
+        return NULL;
     }
 
-    a->nombre = new (char[MAX_NOMBRE]);
+    Archivo a = new nodo_archivo;
+
+    if (a == NULL) {
+        return NULL;
+    }
+
+    // Asignar memoria para el nombre e inicializar a cero
+    a->nombre = new char[MAX_NOMBRE]();  // Los paréntesis inicializan a cero
+    
+    // Copiar el nombre asegurando la terminación nula
     strncpy(a->nombre, nombre, MAX_NOMBRE - 1);
-    a->nombre[MAX_NOMBRE - 1] = '\0';
-    // a->v = NULL;
+    a->nombre[MAX_NOMBRE - 1] = '\0';  // Garantizar terminación nula
+    
+    // Inicializar el árbol de versiones
+    a->primeraVersion = NULL;
 
     return a;
 }
@@ -72,38 +80,65 @@ TipoRet CrearVersion(Archivo& a, char* version, char* error) {
         return ERROR;
     }
 
-    // Validar si la versión ya existe
-    if (buscarVersion(a->primeraVersion, version) != NULL) {
-        strcpy(error, "Version ya existe");
-        return ERROR;
+    // Verificar si la versión ya existe
+    version_struct* versionExistente = buscarVersionRecursiva(a->primeraVersion, version);
+    
+    if (versionExistente != NULL) {
+        // CASO: La versión ya existe - hay que correr hermanas
+        char* padreStr = obtenerPadre(version);
+        int numInsertar = obtenerNumeroSubversion(version);
+        
+        if (padreStr == NULL) {
+            strcpy(error, "No se puede insertar version raiz duplicada");
+            return ERROR;
+        }
+        
+        // Buscar el padre
+        version_struct* padre = buscarVersionRecursiva(a->primeraVersion, padreStr);
+        if (padre == NULL) {
+            strcpy(error, "Error interno: padre no encontrado");
+            delete[] padreStr;
+            return ERROR;
+        }
+        
+        // CORRER VERSIONES HERMANAS
+        correrVersionesHermanas(padre, numInsertar);
+        
+        delete[] padreStr;
+        
+        // Después de correr, verificar nuevamente si la versión existe
+        versionExistente = buscarVersionRecursiva(a->primeraVersion, version);
+        if (versionExistente != NULL) {
+            strcpy(error, "La version sigue existiendo despues de correr hermanas");
+            return ERROR;
+        }
     }
 
+    // Resto de validaciones (padre y huecos)...
     char* ultimoPunto = strrchr(version, '.');
     if (ultimoPunto != NULL) {
-        // Es una subversión (tiene padre)
         char versionPadre[100];
         strncpy(versionPadre, version, ultimoPunto - version);
         versionPadre[ultimoPunto - version] = '\0';
         
-        // Verificar que el padre exista
-        version_struct* padre = buscarVersion(a->primeraVersion, versionPadre);
+        version_struct* padre = buscarVersionRecursiva(a->primeraVersion, versionPadre);
         if (padre == NULL) {
             strcpy(error, "Version padre no existe");
             return ERROR;
         }
 
-        // 🔥 NUEVA VALIDACIÓN: Verificar que no haya huecos
-        // Extraer el número de la subversión actual (después del último punto)
+        // Validación de huecos
         int numSubversionActual = atoi(ultimoPunto + 1);
         
-        // Verificar que todas las subversiones anteriores existan
-        for (int i = 1; i < numSubversionActual; i++) {
-            char subversionAnterior[100];
-            sprintf(subversionAnterior, "%s.%d", versionPadre, i);
-            
-            if (buscarVersion(a->primeraVersion, subversionAnterior) == NULL) {
-                strcpy(error, "Existen huecos en las versiones hermanas");
-                return ERROR;
+        if (numSubversionActual > 1) {
+            for (int i = 1; i < numSubversionActual; i++) {
+                char subversionAnterior[100];
+                sprintf(subversionAnterior, "%s.%d", versionPadre, i);
+                
+                if (buscarVersionRecursiva(a->primeraVersion, subversionAnterior) == NULL) {
+                    strcpy(error, "Existen huecos en las versiones hermanas");
+                    return ERROR;
+                }
             }
         }
     }
@@ -111,30 +146,115 @@ TipoRet CrearVersion(Archivo& a, char* version, char* error) {
     // Crear nueva versión
     version_struct* nuevaVersion = crearVersionSimple(version);
 
-    // Insertar al final de la lista
+    // Insertar en la posición correcta
     if (a->primeraVersion == NULL) {
         a->primeraVersion = nuevaVersion;
     } else {
-        version_struct* ultima = buscarUltimaVersion(a->primeraVersion);
-        ultima->sigVersion = nuevaVersion;
+        char* ultimoPunto = strrchr(version, '.');
+        if (ultimoPunto != NULL) {
+            char versionPadre[100];
+            strncpy(versionPadre, version, ultimoPunto - version);
+            versionPadre[ultimoPunto - version] = '\0';
+            
+            version_struct* padre = buscarVersionRecursiva(a->primeraVersion, versionPadre);
+            if (padre != NULL) {
+                // Insertar en orden numérico en las subversiones del padre
+                int numNuevo = obtenerNumeroSubversion(version);
+                version_struct* actual = padre->primeraSubversion;
+                version_struct* anterior = NULL;
+                
+                while (actual != NULL) {
+                    int numActual = obtenerNumeroSubversion(actual->numero);
+                    if (numActual >= numNuevo) {
+                        break;
+                    }
+                    anterior = actual;
+                    actual = actual->sigVersion;
+                }
+                
+                if (anterior == NULL) {
+                    // Insertar al principio
+                    nuevaVersion->sigVersion = padre->primeraSubversion;
+                    padre->primeraSubversion = nuevaVersion;
+                } else {
+                    // Insertar en medio
+                    anterior->sigVersion = nuevaVersion;
+                    nuevaVersion->sigVersion = actual;
+                }
+                nuevaVersion->padre = padre;
+            }
+        } else {
+            // Es versión raíz - insertar al final
+            version_struct* ultima = buscarUltimaVersion(a->primeraVersion);
+            if (ultima != NULL) {
+                ultima->sigVersion = nuevaVersion;
+            } else {
+                a->primeraVersion = nuevaVersion;
+            }
+        }
     }
 
     return OK;
 }
+    
 
-TipoRet BorrarVersion(Archivo& a, char* version)
+    TipoRet BorrarVersion(Archivo& a, char* version)
 {
-    // Elimina una versión del archivo si la version pasada por parámetro existe. En otro caso la operación quedará sin
-    // efecto. Si la versión a eliminar posee subversiones, éstas deberán ser eliminadas también, así como el texto
-    // asociado a cada una de las versiones. No deben quedar números de versiones libres sin usar. Por lo tanto cuando
-    // se elimina una versión, las versiones hermanas que le siguen deben decrementar su numeración (así también sus
-    // subversiones dependientes). Por ejemplo, si existen las versiones 2.15.1, 2.15.2 y 2.15.3, y elimino la 2.15.1,
-    // la versión 2.15.2 y la 2.15.3 pasan a ser 2.15.1 y 2.15.2 respectivamente, esto incluye a todas las subversiones
-    // de estas versiones.
+    if (a == NULL) {
+        return ERROR;
+    }
 
-    (void)a; (void)version;  // ← Elimina warnings
-    return NO_IMPLEMENTADA;
+    // Buscar la versión a eliminar
+    version_struct* versionEliminar = buscarVersionRecursiva(a->primeraVersion, version);
+    if (versionEliminar == NULL) {
+        return ERROR; // La versión no existe
+    }
+
+    // Caso especial: si es la primera versión raíz
+    if (versionEliminar->padre == NULL) {
+        // Buscar la versión anterior en la lista de raíces
+        version_struct* actual = a->primeraVersion;
+        version_struct* anterior = NULL;
+        
+        while (actual != NULL && actual != versionEliminar) {
+            anterior = actual;
+            actual = actual->sigVersion;
+        }
+        
+        if (anterior == NULL) {
+            // Es la primera versión raíz
+            a->primeraVersion = versionEliminar->sigVersion;
+        } else {
+            // Es una versión raíz pero no la primera
+            anterior->sigVersion = versionEliminar->sigVersion;
+        }
+    } else {
+        // Es una subversión, buscar en la lista del padre
+        version_struct* padre = versionEliminar->padre;
+        version_struct* actual = padre->primeraSubversion;
+        version_struct* anterior = NULL;
+        
+        while (actual != NULL && actual != versionEliminar) {
+            anterior = actual;
+            actual = actual->sigVersion;
+        }
+        
+        if (anterior == NULL) {
+            // Es la primera subversión
+            padre->primeraSubversion = versionEliminar->sigVersion;
+        } else {
+            // Es una subversión pero no la primera
+            anterior->sigVersion = versionEliminar->sigVersion;
+        }
+    }
+
+    // Eliminar la versión y todas sus subversiones recursivamente
+    eliminarVersionRecursiva(versionEliminar);
+
+    return OK;
 }
+
+
 
 TipoRet MostrarVersiones(Archivo a) {
     if (a == NULL) {
@@ -150,16 +270,11 @@ TipoRet MostrarVersiones(Archivo a) {
         return OK;
     }
     
-    // Versión SIMPLIFICADA - mostrar lista plana
-    version_struct* actual = a->primeraVersion;
-    while (actual != NULL) {
-        cout << actual->numero << endl;
-        actual = actual->sigVersion;
-    }
+    // ✅ USAR la función recursiva del módulo arbol_versiones
+    mostrarVersionesRecursivo(a->primeraVersion, 0);
     
     return OK;
 }
-
 TipoRet InsertarLinea(Archivo& a, char* version, char* contenidoLinea, unsigned int nroLinea, char* error)
 {
     // Esta función inserta una linea de texto a la version parámetro en la posición nroLinea.
@@ -257,8 +372,6 @@ TipoRet BorrarLinea(Archivo& a, char* version, unsigned int nroLinea, char* erro
 
 TipoRet MostrarTexto(Archivo a, char* version)
 {
-    // Esta función muestra el texto completo de la version, teniendo en cuenta los cambios realizados en dicha versión
-    // y en las versiones ancestras, de la cual ella depende.
     if (a == NULL){
         return ERROR;
     }
@@ -267,12 +380,12 @@ TipoRet MostrarTexto(Archivo a, char* version)
     if (versionEncontrada == NULL){
         return ERROR;
     }
+    
     cout << a->nombre << " - " << version << endl;
     cout << endl;
 
-
-    if (versionEncontrada -> textoVersion == NULL||
-        versionEncontrada -> textoVersion -> primeralineas == NULL){
+    if (versionEncontrada->textoVersion == NULL || 
+        versionEncontrada->textoVersion->primeralineas == NULL) {
         cout << "No contiene lineas" << endl;
         return OK;
     }
@@ -285,6 +398,7 @@ TipoRet MostrarTexto(Archivo a, char* version)
         actual = actual->sig;
         numeroLinea++;
     }
+    
     return OK;
 }
 

@@ -4,6 +4,7 @@
 // main.cpp
 // Programa Principal Obligatorio
 
+#include "definiciones.hpp"
 #include "archivo.hpp"
 #include <iostream>
 #include <stdio.h>
@@ -12,17 +13,24 @@
 
 using namespace std;
 
+// Para Windows - strcasecmp no existe
+#ifdef _WIN32
+    #define strcasecmp _stricmp
+#endif
+
 int main()
 {
-    char* nombre = new(char[MAX_NOMBRE]);
-    char* comando = new(char[MAX_COMANDO]);
-    char* error = new(char[MAX_COMANDO]);
+    char* nombre = new char[MAX_NOMBRE];
+    char* comando = new char[MAX_COMANDO];
+    char* error = new char[MAX_COMANDO];
     TipoRet retorno;
     bool ejecutado = false;
     char *pch, *pch1, *pch2;
 
     cout << "Inserte el nombre del archivo\n> ";
     cin >> nombre;
+
+    cin.ignore(1000, '\n'); //LIMPAMOS BUFFER
 
     Archivo a = CrearArchivo(nombre);
     cout << " - Archivo \"" << nombre << "\" creado.\n";
@@ -164,4 +172,6 @@ int main()
     delete[] nombre;
     delete[] comando;
     delete[] error;
+    
+    return 0;
 }

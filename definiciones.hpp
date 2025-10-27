@@ -11,7 +11,7 @@ enum _retorno { OK, ERROR, NO_IMPLEMENTADA };
 
 typedef enum _retorno TipoRet;
 
-#define MAX_NOMBRE 20
-#define MAX_COMANDO 75
+#define MAX_NOMBRE 100
+#define MAX_COMANDO 200
 
 #endif

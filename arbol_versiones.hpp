@@ -1,19 +1,21 @@
 #ifndef ARBOL_VERSIONES_H
 #define ARBOL_VERSIONES_H
 
-#include "estructuras_comunes.hpp"  // ← Incluir estructuras
+#include "version.hpp"
+#include <vector>
 
-// Funciones de búsqueda en el árbol
+using namespace std;
+
+// Declaraciones de funciones
+version_struct* buscarVersionRecursiva(version_struct* raiz, char* numeroVersion);
 version_struct* buscarVersion(version_struct* raiz, char* numeroVersion);
 version_struct* buscarUltimaVersion(version_struct* raiz);
-
-// Funciones para manipulación del árbol
 char* obtenerPadre(char* version);
 int obtenerNumeroSubversion(char* version);
-version_struct* crearVersionConNumero(char* versionBase, int nuevoNumero);
-void renumerarVersionYSubversiones(version_struct* version, char* nuevoNumero);
-
-// Función para mostrar el árbol jerárquicamente
+void obtenerTodasHermanas(version_struct* padre, vector<version_struct*>& hermanas);
+void renumerarVersionCompleta(version_struct* version, char* nuevoNumeroPadre);
+void correrVersionesHermanas(version_struct* padre, int numeroDesde);
 void mostrarVersionesRecursivo(version_struct* version, int nivel);
+void eliminarVersionRecursiva(version_struct* version);
 
 #endif
