@@ -1,9 +1,21 @@
 #ifndef ESTRUCTURAS_COMUNES_H
 #define ESTRUCTURAS_COMUNES_H
 
-#include "texto.hpp"
+#include "definiciones.hpp"
 
-// Definir la estructura aquí para que todos la vean
+// estructura para una línea de texto
+struct linea {
+    char* contenido;
+    linea* sig;
+};
+
+// estructura para el texto de una versión
+struct texto {
+    linea* primeralineas;
+    unsigned int cantidadLineas;
+};
+
+// Estructura para una versión
 struct version_struct {
     char* numero;
     texto* textoVersion;

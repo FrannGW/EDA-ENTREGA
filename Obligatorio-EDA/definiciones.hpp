@@ -1,17 +1,19 @@
 #ifndef DEFINICIONES_H
 #define DEFINICIONES_H
 
-// Estructuras de Datos y Algoritmos - Obligatorio 2025
-// Tecnologo en Informatica FIng - DGETP - UTEC
-//
-// definiciones.h
-// Modulo para definiciones generales del proyecto como constantes, etc.
 
-enum _retorno { OK, ERROR, NO_IMPLEMENTADA };
+
+// Tipos de retorno para las operaciones del sistema
+enum _retorno { 
+    OK,                 // Operación exitosa
+    ERROR,              // Error en la operación  
+    NO_IMPLEMENTADA     // Función no implementada
+};
 
 typedef enum _retorno TipoRet;
 
-#define MAX_NOMBRE 100
-#define MAX_COMANDO 200
+// Constantes para límites del sistema
+#define MAX_NOMBRE 100      // maximo para el nombre del archivo
+#define MAX_COMANDO 200     // maximo para comando de entrada
 
 #endif
