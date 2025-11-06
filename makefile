@@ -4,7 +4,7 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++11 -g
 
 # Lista de todos los archivos objeto
-OBJETOS = main.o archivo.o version.o texto.o arbol_versiones.o
+OBJETOS = main.o archivo.o version.o arbol_versiones.o CreacionVersiones.o EliminacionVersiones.o MostrarVersiones.o
 
 # Archivo ejecutable principal
 TARGET = main.exe
@@ -14,20 +14,27 @@ $(TARGET): $(OBJETOS)
 	$(CXX) -o $(TARGET) $(OBJETOS)
 
 # Dependencias de cada archivo objeto
-main.o: main.cpp archivo.hpp version.hpp texto.hpp linea.hpp definiciones.hpp arbol_versiones.hpp estructuras_comunes.hpp
+main.o: main.cpp archivo.hpp version.hpp definiciones.hpp arbol_versiones.hpp estructuras_comunes.hpp
 	$(CXX) $(CXXFLAGS) -c main.cpp
 
-archivo.o: archivo.cpp archivo.hpp version.hpp texto.hpp linea.hpp definiciones.hpp arbol_versiones.hpp estructuras_comunes.hpp
+archivo.o: archivo.cpp archivo.hpp version.hpp definiciones.hpp arbol_versiones.hpp estructuras_comunes.hpp CreacionVersiones.hpp EliminacionVersiones.hpp MostrarVersiones.hpp
 	$(CXX) $(CXXFLAGS) -c archivo.cpp
 
-version.o: version.cpp version.hpp texto.hpp linea.hpp definiciones.hpp estructuras_comunes.hpp
+version.o: version.cpp version.hpp definiciones.hpp estructuras_comunes.hpp
 	$(CXX) $(CXXFLAGS) -c version.cpp
 
-texto.o: texto.cpp texto.hpp linea.hpp definiciones.hpp
-	$(CXX) $(CXXFLAGS) -c texto.cpp
-
-arbol_versiones.o: arbol_versiones.cpp arbol_versiones.hpp version.hpp texto.hpp linea.hpp definiciones.hpp estructuras_comunes.hpp
+arbol_versiones.o: arbol_versiones.cpp arbol_versiones.hpp version.hpp definiciones.hpp estructuras_comunes.hpp
 	$(CXX) $(CXXFLAGS) -c arbol_versiones.cpp
+
+# NUEVOS MÓDULOS
+CreacionVersiones.o: CreacionVersiones.cpp CreacionVersiones.hpp arbol_versiones.hpp version.hpp
+	$(CXX) $(CXXFLAGS) -c CreacionVersiones.cpp
+
+EliminacionVersiones.o: EliminacionVersiones.cpp EliminacionVersiones.hpp arbol_versiones.hpp
+	$(CXX) $(CXXFLAGS) -c EliminacionVersiones.cpp
+
+MostrarVersiones.o: MostrarVersiones.cpp MostrarVersiones.hpp arbol_versiones.hpp
+	$(CXX) $(CXXFLAGS) -c MostrarVersiones.cpp
 
 # Reglas para limpieza (Windows)
 clean:

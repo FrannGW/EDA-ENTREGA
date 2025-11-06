@@ -6,8 +6,7 @@
 #include "version.hpp"
 #include "arbol_versiones.hpp"
 
-
-// struct principal del arhhivo con sus versiomes
+// struct principal del archivo con sus versiones
 struct nodo_archivo {
     char* nombre;                   // nombre del archivo
     version_struct* primeraVersion; // raíz del árbol de versiones
