@@ -6,9 +6,7 @@
 using namespace std;
 
 
-//Crea una nueva versión básica sin texto ni relaciones
-//dentificador de la versión (ej: "1", "2.1")
-//Puntero a la versión creada
+//retornamos version con numero dado, sin texto, sin padre, no subversiones y sin hermanas
 version_struct* crearVersionSimple(char* numero) {
     version_struct* nueva = new version_struct;
     nueva->numero = new char[strlen(numero) + 1];
@@ -21,18 +19,18 @@ version_struct* crearVersionSimple(char* numero) {
 }
 
 
-//Valida el formato de un número de versión
-//version String a validar
 
 
-//establecemos las reglas de validacion que especifica la letra
+
+//retorna true si version tiene formato valido (solo digitos y puntos o puntos consecutivos)
+//false y da error
  bool validarVersion(char* version, char* error) {
     if (version == NULL || strlen(version) == 0) {
         strcpy(error, "Version vacia");
         return false;
     }
     
-    // Solo permite dígitos y puntos
+// solo pemitimos digitos  puntos
     for (unsigned int i = 0; i < strlen(version); i++) {
         if (!(version[i] >= '0' && version[i] <= '9') && version[i] != '.') {
             strcpy(error, "Version contiene caracteres invalidos");

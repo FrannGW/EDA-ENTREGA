@@ -1,9 +1,42 @@
 #include "EliminacionVersiones.hpp"
-#include "arbol_versiones.hpp"
+#include "NavegacionVersiones.hpp"
 #include <string.h>
+#include <iostream>
 
 using namespace std;
 
+//version es un puntero a version_struct
+//liberamos de forma recusriva la version y todas sus subversiones
+// de momento aun no libero texto, falta implementar
+void eliminarVersionRecursiva(version_struct* version) {
+    if (version == NULL) return;
+    
+    version_struct* subversion = version->primeraSubversion;
+    while (subversion != NULL) {
+        version_struct* siguiente = subversion->sigVersion;
+        eliminarVersionRecursiva(subversion);
+        subversion = siguiente;
+    }
+    
+    // TODO: Implementar liberación de texto cuando esté listo
+    /*
+    if (version->textoVersion != NULL) {
+        linea* actualLinea = version->textoVersion->primeralineas;
+        while (actualLinea != NULL) {
+            linea* siguienteLinea = actualLinea->sig;
+            delete[] actualLinea->contenido;
+            delete actualLinea;
+            actualLinea = siguienteLinea;
+        }
+        delete version->textoVersion;
+    }
+    */
+    
+    delete[] version->numero;
+    delete version;
+}
+
+//elimina version y sus subversiones, y renumera las versiones hermanas
 TipoRet borrarVersionModulo(Archivo& a, char* version, char* error) {
     if (a == NULL) {
         strcpy(error, "Archivo no existe");
@@ -16,9 +49,8 @@ TipoRet borrarVersionModulo(Archivo& a, char* version, char* error) {
         return ERROR;
     }
 
-    // Reorganizar punteros del padre/hermanos
+    // reorgqnizacion de punteros del padre/hermanos
     if (versionEliminar->padre == NULL) {
-        // Es versión raíz
         version_struct* actual = a->primeraVersion;
         version_struct* anterior = NULL;
         
@@ -33,7 +65,6 @@ TipoRet borrarVersionModulo(Archivo& a, char* version, char* error) {
             anterior->sigVersion = versionEliminar->sigVersion;
         }
     } else {
-        // Es subversión
         version_struct* padre = versionEliminar->padre;
         version_struct* actual = padre->primeraSubversion;
         version_struct* anterior = NULL;
@@ -50,7 +81,6 @@ TipoRet borrarVersionModulo(Archivo& a, char* version, char* error) {
         }
     }
 
-    // Eliminar recursivamente
     eliminarVersionRecursiva(versionEliminar);
     return OK;
 }

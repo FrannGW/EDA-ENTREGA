@@ -1,5 +1,6 @@
 #include "CreacionVersiones.hpp"
-#include "arbol_versiones.hpp"
+#include "NavegacionVersiones.hpp"
+#include "ManipulacionVersiones.hpp"  
 #include "version.hpp"
 #include <string.h>
 #include <stdlib.h>
@@ -7,18 +8,20 @@
 
 using namespace std;
 
+//crea nueva cersion en el archivo si cumplen las reglas (padre existe y no hay huecos)
+// si version existe, corre las hermanas
 TipoRet crearVersionModulo(Archivo& a, char* version, char* error) {
     if (a == NULL) {
         strcpy(error, "Archivo no existe");
         return ERROR;
     }
 
-    // Validar formato de versión
+// Validar formato de versión
     if (!validarVersion(version, error)) {
         return ERROR;
     }
 
-    // caso aparte: Versión ya existe - correr hermanas
+// caso aparte: version ya existe - correr hermanas
     version_struct* versionExistente = buscarVersionRecursiva(a->primeraVersion, version);
     if (versionExistente != NULL) {
         char* padreStr = obtenerPadre(version);
@@ -36,12 +39,12 @@ TipoRet crearVersionModulo(Archivo& a, char* version, char* error) {
             return ERROR;
         }
         
-        // Correr versiones hermanas para hacer espacio
+    // Correr versiones hermanas para hacer espacio
         correrVersionesHermanas(padre, numInsertar);
         delete[] padreStr;
     }
 
-    // Validar existencia del padre (excepto para versiones raíz)
+// Validar existencia del padre (excepto para versiones raíz)
     char* ultimoPunto = strrchr(version, '.');
     if (ultimoPunto != NULL) {
         char versionPadre[100];
@@ -54,7 +57,7 @@ TipoRet crearVersionModulo(Archivo& a, char* version, char* error) {
             return ERROR;
         }
 
-        // Validar que no haya huecos entre versiones hermanas
+    // validar que no haya huecos entre versiones hermanas
         int numSubversionActual = atoi(ultimoPunto + 1);
         if (numSubversionActual > 1) {
             for (int i = 1; i < numSubversionActual; i++) {
@@ -73,19 +76,19 @@ TipoRet crearVersionModulo(Archivo& a, char* version, char* error) {
     version_struct* nuevaVersion = crearVersionSimple(version);
 
     if (a->primeraVersion == NULL) {
-        // Primera versión del archivo
+    // primera versión del archivo
         a->primeraVersion = nuevaVersion;
     } else {
         char* ultimoPunto = strrchr(version, '.');
         if (ultimoPunto != NULL) {
-            // Es subversión - insertar en el padre
+            // es subversión - insertar en el padre
             char versionPadre[100];
             strncpy(versionPadre, version, ultimoPunto - version);
             versionPadre[ultimoPunto - version] = '\0';
             
             version_struct* padre = buscarVersionRecursiva(a->primeraVersion, versionPadre);
             if (padre != NULL) {
-                // Insertar en orden numérico entre las subversiones del padre
+                // insertar en orden numérico entre las subversiones del padre
                 int numNuevo = obtenerNumeroSubversion(version);
                 version_struct* actual = padre->primeraSubversion;
                 version_struct* anterior = NULL;
@@ -98,7 +101,7 @@ TipoRet crearVersionModulo(Archivo& a, char* version, char* error) {
                 }
                 
                 if (anterior == NULL) {
-                    // Insertar al principio
+                    // insertar al principio
                     nuevaVersion->sigVersion = padre->primeraSubversion;
                     padre->primeraSubversion = nuevaVersion;
                 } else {

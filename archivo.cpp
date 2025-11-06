@@ -2,13 +2,16 @@
 #include "CreacionVersiones.hpp"
 #include "EliminacionVersiones.hpp"
 #include "MostrarVersiones.hpp"
-#include "arbol_versiones.hpp"
+#include "NavegacionVersiones.hpp"
 #include "version.hpp"
 #include <iostream>
 #include <string.h>
 
 using namespace std;
 
+// nombre tiene que ser un string valido
+//retornamos archivo con nombre especificado y sin vesriones
+// si falla asignacion de memoria retorna NULL
 Archivo CrearArchivo(char* nombre) {
     if (nombre == NULL) {
         return NULL;
@@ -23,12 +26,14 @@ Archivo CrearArchivo(char* nombre) {
     a->nombre = new char[strlen(nombre) + 1];
     strcpy(a->nombre, nombre);
     
-    // Inicializar sin versiones
-    a->primeraVersion = NULL;
+    
+    a->primeraVersion = NULL;   // Inicializar sin versiones
 
     return a;
 }
 
+//referencia a un puntero de archivo creado]
+//cuando borro libero todo la memoria del archivo y sus versiones.
 TipoRet BorrarArchivo(Archivo& a) {
     if (a == NULL) {
         return ERROR;
@@ -50,28 +55,32 @@ TipoRet BorrarArchivo(Archivo& a) {
     return OK;
 }
 
-// AHORA SOLO INVOCAMOS LOS MÓDULOS:
-
+// a es un archivo valido, y version un string con el formato version
+// crea la version del archivo, y retorna OK si se crea
 TipoRet CrearVersion(Archivo& a, char* version, char* error) {
     return crearVersionModulo(a, version, error);
 }
 
+//elimina version y subversion y las renumera a las versiones hermanas
 TipoRet BorrarVersion(Archivo& a, char* version) {
     char error[100];
     return borrarVersionModulo(a, version, error);
 }
 
+//muestra las versiones de forma jerarquica
 TipoRet MostrarVersiones(Archivo a) {
     return mostrarVersionesModulo(a);
 }
 
-// MANTENER EL RESTO DE FUNCIONES IGUAL:
+// AUN SIN IMPLEMENTAR
 
 // Función auxiliar para verificar si una versión puede ser editada
 bool versionPuedeSerEditada(version_struct* version) {
     return version != NULL && version->primeraSubversion == NULL;
 }
 
+
+//MENCIONAR AL PROFESOR QUE ESTO NO ESTA IMPLEMENTADO AUN, ES CODIGO QUE AUN NO FUNCIONA
 TipoRet InsertarLinea(Archivo& a, char* version, char* contenidoLinea, unsigned int nroLinea, char* error) {
     if (a == NULL) {
         strcpy(error, "Archivo no existe");

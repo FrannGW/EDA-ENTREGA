@@ -4,7 +4,7 @@
 #include "definiciones.hpp"
 #include "estructuras_comunes.hpp"
 #include "version.hpp"
-#include "arbol_versiones.hpp"
+
 
 // struct principal del archivo con sus versiones
 struct nodo_archivo {
