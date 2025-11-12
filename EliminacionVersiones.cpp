@@ -28,6 +28,16 @@ void eliminarVersionRecursiva(version_struct* version) {
         }
         delete version->textoVersion;
     }
+
+    cambio* actualCambio = version->cambios;
+    while (actualCambio != NULL) {
+        cambio* siguienteCambio = actualCambio->sig;
+        if (actualCambio->contenido != NULL) {
+            delete[] actualCambio->contenido;
+        }
+        delete actualCambio;
+        actualCambio = siguienteCambio;
+    }
     
     delete[] version->numero;
     delete version;

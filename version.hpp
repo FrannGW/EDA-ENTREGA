@@ -9,4 +9,5 @@ version_struct* crearVersionSimple(char* numero);
 // valida que el formato del número de versión sea correcto
 bool validarVersion(char* version, char* error);
 
+
 #endif

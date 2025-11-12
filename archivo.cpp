@@ -2,15 +2,14 @@
 #include "CreacionVersiones.hpp"
 #include "EliminacionVersiones.hpp"
 #include "MostrarVersiones.hpp"
-#include "NavegacionVersiones.hpp"
-#include "Lineas.hpp"
 #include "version.hpp"
+#include "Lineas.hpp"
+#include "MostrarCambios.hpp"
 #include <iostream>
 #include <string.h>
+#include "MostrarVersiones.hpp"
+#include "NavegacionVersiones.hpp"
 
-using namespace std;
-
-// ... (todo el resto de tu código igual)
 using namespace std;
 
 // nombre tiene que ser un string valido
@@ -73,7 +72,7 @@ TipoRet BorrarVersion(Archivo& a, char* version) {
 
 //muestra las versiones de forma jerarquica
 TipoRet MostrarVersiones(Archivo a) {
-    return mostrarVersionesModulo(a);
+    return mostrarVersionesModulo(a); 
 }
 
 // AUN SIN IMPLEMENTAR
@@ -99,13 +98,63 @@ TipoRet MostrarTexto(Archivo a, char* version) {
 
 // Funciones no implementadas
 TipoRet MostrarCambios(Archivo a, char* version) { 
-    (void)a; (void)version;
-    return NO_IMPLEMENTADA; 
+    return MostrarCambiosModulo(a, version);
 }
 
-TipoRet Iguales(Archivo a, char* version1, char* version2, bool& iguales) { 
-    (void)a; (void)version1; (void)version2; (void)iguales;
-    return NO_IMPLEMENTADA; 
+
+TipoRet Iguales(Archivo a, char* version1, char* version2, bool& iguales) {
+    if (a == NULL) {
+        return ERROR;
+    }
+
+    // Usar la función existente buscarVersionRecursiva
+    version_struct* v1 = buscarVersionRecursiva(a->primeraVersion, version1);
+    version_struct* v2 = buscarVersionRecursiva(a->primeraVersion, version2);
+    
+    if (v1 == NULL || v2 == NULL) {
+        return ERROR;
+    }
+
+    // Obtener los textos de ambas versiones
+    texto* texto1 = v1->textoVersion;
+    texto* texto2 = v2->textoVersion;
+
+    // Caso 1: Ambos textos son NULL o vacíos
+    if ((texto1 == NULL || texto1->primeralineas == NULL) && 
+        (texto2 == NULL || texto2->primeralineas == NULL)) {
+        iguales = true;
+        return OK;
+    }
+
+    // Caso 2: Solo uno de los textos es NULL o vacío
+    if ((texto1 == NULL || texto1->primeralineas == NULL) || 
+        (texto2 == NULL || texto2->primeralineas == NULL)) {
+        iguales = false;
+        return OK;
+    }
+
+    // Caso 3: Diferente cantidad de líneas
+    if (texto1->cantidadLineas != texto2->cantidadLineas) {
+        iguales = false;
+        return OK;
+    }
+
+    // Caso 4: Comparar línea por línea
+    linea* linea1 = texto1->primeralineas;
+    linea* linea2 = texto2->primeralineas;
+    
+    iguales = true; // Asumimos que son iguales hasta encontrar una diferencia
+    
+    while (linea1 != NULL && linea2 != NULL) {
+        if (strcmp(linea1->contenido, linea2->contenido) != 0) {
+            iguales = false;
+            break;
+        }
+        linea1 = linea1->sig;
+        linea2 = linea2->sig;
+    }
+
+    return OK;
 }
 
 TipoRet VersionIndependiente(Archivo& a, char* version) { 

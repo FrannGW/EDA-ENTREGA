@@ -5,10 +5,9 @@
 #include "estructuras_comunes.hpp"
 #include "version.hpp"
 
-// struct principal del archivo con sus versiones
 struct nodo_archivo {
-    char* nombre;                   // nombre del archivo
-    version_struct* primeraVersion; // raíz del árbol de versiones
+    char* nombre;
+    version_struct* primeraVersion;
 };
 
 typedef struct nodo_archivo* Archivo;
@@ -22,12 +21,12 @@ TipoRet CrearVersion(Archivo& a, char* version, char* error);
 TipoRet BorrarVersion(Archivo& a, char* version);
 TipoRet MostrarVersiones(Archivo a);
 
-// operaciones de texto (parcialmente implementadas)
+// operaciones de texto
 TipoRet InsertarLinea(Archivo& a, char* version, char* linea, unsigned int nroLinea, char* error);
 TipoRet BorrarLinea(Archivo& a, char* version, unsigned int nroLinea, char* error);
 TipoRet MostrarTexto(Archivo a, char* version);
 
-// operaciones no implementadas (para futuro)
+// operaciones no implementadas
 TipoRet MostrarCambios(Archivo a, char* version);
 TipoRet Iguales(Archivo a, char* version1, char* version2, bool& iguales);
 TipoRet VersionIndependiente(Archivo& a, char* version);

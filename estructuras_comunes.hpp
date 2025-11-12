@@ -15,6 +15,14 @@ struct texto {
     unsigned int cantidadLineas;
 };
 
+// Estructura para trackear cambios (inserciones y borrados)
+struct cambio {
+    char tipo; // 'I' para inserción, 'B' para borrado
+    unsigned int nroLinea;
+    char* contenido; // solo para inserciones
+    cambio* sig;
+};
+
 // Estructura para una versión
 struct version_struct {
     char* numero;
@@ -22,6 +30,7 @@ struct version_struct {
     version_struct* padre;
     version_struct* primeraSubversion;
     version_struct* sigVersion;
+    cambio* cambios; // lista de cambios realizados en esta versión
 };
 
 #endif

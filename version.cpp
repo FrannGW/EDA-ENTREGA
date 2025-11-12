@@ -8,12 +8,13 @@ using namespace std;
 //retornamos version con numero dado, sin texto, sin padre, no subversiones y sin hermanas
 version_struct* crearVersionSimple(char* numero) {
     version_struct* nueva = new version_struct;
-    nueva->numero = new char[strlen(numero) + 1]; //copiar numero de version
+    nueva->numero = new char[strlen(numero) + 1];
     strcpy(nueva->numero, numero);
-    nueva->textoVersion = NULL;     // sin texto 
-    nueva->padre = NULL;            // sin padre 
-    nueva->primeraSubversion = NULL; // sin subversiones 
-    nueva->sigVersion = NULL;       // sin hermanas 
+    nueva->textoVersion = NULL;
+    nueva->padre = NULL;
+    nueva->primeraSubversion = NULL;
+    nueva->sigVersion = NULL;
+    nueva->cambios = NULL; // Inicializar sin cambios
     return nueva;
 }
 

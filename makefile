@@ -2,8 +2,8 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++11 -g
 
-# Lista de todos los archivos objeto (AGREGA Lineas.o aquí)
-OBJETOS = main.o archivo.o version.o NavegacionVersiones.o ManipulacionVersiones.o CreacionVersiones.o EliminacionVersiones.o MostrarVersiones.o Lineas.o
+# Lista de todos los archivos objeto (AGREGAR MostrarCambios.o)
+OBJETOS = main.o archivo.o version.o NavegacionVersiones.o ManipulacionVersiones.o CreacionVersiones.o EliminacionVersiones.o MostrarVersiones.o Lineas.o MostrarCambios.o
 
 TARGET = main.exe
 
@@ -13,16 +13,19 @@ $(TARGET): $(OBJETOS)
 main.o: main.cpp archivo.hpp version.hpp definiciones.hpp estructuras_comunes.hpp
 	$(CXX) $(CXXFLAGS) -c main.cpp
 
-# ACTUALIZA archivo.o para incluir Lineas.hpp
-archivo.o: archivo.cpp archivo.hpp version.hpp definiciones.hpp estructuras_comunes.hpp CreacionVersiones.hpp EliminacionVersiones.hpp MostrarVersiones.hpp NavegacionVersiones.hpp Lineas.hpp
+archivo.o: archivo.cpp archivo.hpp version.hpp definiciones.hpp estructuras_comunes.hpp CreacionVersiones.hpp EliminacionVersiones.hpp MostrarVersiones.hpp NavegacionVersiones.hpp Lineas.hpp MostrarCambios.hpp
 	$(CXX) $(CXXFLAGS) -c archivo.cpp
 
 version.o: version.cpp version.hpp definiciones.hpp estructuras_comunes.hpp
 	$(CXX) $(CXXFLAGS) -c version.cpp
 
-# NUEVO MÓDULO LINEAS
+# MÓDULO LINEAS
 Lineas.o: Lineas.cpp Lineas.hpp archivo.hpp NavegacionVersiones.hpp estructuras_comunes.hpp definiciones.hpp
 	$(CXX) $(CXXFLAGS) -c Lineas.cpp
+
+# NUEVO MÓDULO MOSTRAR CAMBIOS
+MostrarCambios.o: MostrarCambios.cpp MostrarCambios.hpp archivo.hpp NavegacionVersiones.hpp
+	$(CXX) $(CXXFLAGS) -c MostrarCambios.cpp
 
 # MÓDULOS EXISTENTES
 NavegacionVersiones.o: NavegacionVersiones.cpp NavegacionVersiones.hpp

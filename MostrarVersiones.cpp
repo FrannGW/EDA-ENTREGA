@@ -1,5 +1,7 @@
 #include "MostrarVersiones.hpp"
 #include <iostream>
+#include "NavegacionVersiones.hpp"
+#include <string.h>
 
 using namespace std;
 
