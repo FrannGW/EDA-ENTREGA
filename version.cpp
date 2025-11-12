@@ -1,3 +1,4 @@
+Version.cpp:
 #include "version.hpp"
 #include <string.h>
 #include <stdlib.h>
@@ -9,7 +10,7 @@ using namespace std;
 //retornamos version con numero dado, sin texto, sin padre, no subversiones y sin hermanas
 version_struct* crearVersionSimple(char* numero) {
     version_struct* nueva = new version_struct;
-    nueva->numero = new char[strlen(numero) + 1];
+    nueva->numero = new char[strlen(numero) + 1]; //copiar numero de version
     strcpy(nueva->numero, numero);
     nueva->textoVersion = NULL;     // sin texto 
     nueva->padre = NULL;            // sin padre 

@@ -82,66 +82,7 @@ bool versionPuedeSerEditada(version_struct* version) {
 
 //MENCIONAR AL PROFESOR QUE ESTO NO ESTA IMPLEMENTADO AUN, ES CODIGO QUE AUN NO FUNCIONA
 TipoRet InsertarLinea(Archivo& a, char* version, char* contenidoLinea, unsigned int nroLinea, char* error) {
-    if (a == NULL) {
-        strcpy(error, "Archivo no existe");
-        return ERROR;
-    }
-
-    version_struct* versionEncontrada = buscarVersion(a->primeraVersion, version);
-    if (versionEncontrada == NULL) {
-        strcpy(error, "Version no existe");
-        return ERROR;
-    }
-
-    if (versionEncontrada->primeraSubversion != NULL){
-        strcpy(error, "No se puede editar version con subversiones");
-        return ERROR;
-    }
-    
-    if (contenidoLinea == NULL || strlen(contenidoLinea) == 0){
-        strcpy(error, "Linea Vacia");
-        return ERROR;
-    }
-    
-    if (nroLinea < 1){
-        strcpy(error, "Numero de linea invalido");
-        return ERROR;
-    }
-    
-    if (versionEncontrada->textoVersion == NULL) {
-        versionEncontrada->textoVersion = new texto;
-        versionEncontrada->textoVersion->primeralineas = NULL;
-        versionEncontrada->textoVersion->cantidadLineas = 0;
-    }
-    
-    texto* txt = versionEncontrada->textoVersion;
-
-    if (nroLinea > txt->cantidadLineas + 1) {
-        strcpy(error, "Número de línea fuera de rango");
-        return ERROR;
-    }
-
-    linea* nuevaLinea = new linea;
-    nuevaLinea->contenido = new char[strlen(contenidoLinea) + 1];
-    strcpy(nuevaLinea->contenido, contenidoLinea);
-    nuevaLinea->sig = NULL;
-
-    if (nroLinea == 1) {
-        // Insertar al principio
-        nuevaLinea->sig = txt->primeralineas;
-        txt->primeralineas = nuevaLinea;
-    } else {
-        // Insertar en medio o al final
-        linea* actual = txt->primeralineas;
-        for (unsigned int i = 1; i < nroLinea - 1; i++) {
-            actual = actual->sig;
-        }
-        nuevaLinea->sig = actual->sig;
-        actual->sig = nuevaLinea;
-    }
-
-    txt->cantidadLineas++;
-    return OK;
+    return NO_IMPLEMENTADA;
 }                               
 
 TipoRet BorrarLinea(Archivo& a, char* version, unsigned int nroLinea, char* error) {
@@ -151,34 +92,7 @@ TipoRet BorrarLinea(Archivo& a, char* version, unsigned int nroLinea, char* erro
 }
 
 TipoRet MostrarTexto(Archivo a, char* version) {
-    if (a == NULL){
-        return ERROR;
-    }
-
-    version_struct* versionEncontrada = buscarVersion(a->primeraVersion, version);
-    if (versionEncontrada == NULL){
-        return ERROR;
-    }
-    
-    cout << a->nombre << " - " << version << endl;
-    cout << endl;
-
-    if (versionEncontrada->textoVersion == NULL || 
-        versionEncontrada->textoVersion->primeralineas == NULL) {
-        cout << "No contiene lineas" << endl;
-        return OK;
-    }
-
-    linea* actual = versionEncontrada->textoVersion->primeralineas;
-    unsigned int numeroLinea = 1;
-
-    while (actual != NULL){
-        cout << numeroLinea << "\t" << actual->contenido << endl;
-        actual = actual->sig;
-        numeroLinea++;
-    }
-    
-    return OK;
+     return NO_IMPLEMENTADA;
 }
 
 // Funciones no implementadas
