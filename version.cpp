@@ -1,11 +1,9 @@
-Version.cpp:
 #include "version.hpp"
 #include <string.h>
 #include <stdlib.h>
 #include <iostream>
 
 using namespace std;
-
 
 //retornamos version con numero dado, sin texto, sin padre, no subversiones y sin hermanas
 version_struct* crearVersionSimple(char* numero) {
@@ -18,10 +16,6 @@ version_struct* crearVersionSimple(char* numero) {
     nueva->sigVersion = NULL;       // sin hermanas 
     return nueva;
 }
-
-
-
-
 
 //retorna true si version tiene formato valido (solo digitos y puntos o puntos consecutivos)
 //false y da error

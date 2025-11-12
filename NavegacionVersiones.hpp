@@ -1,4 +1,3 @@
-NavegacionVersiones.hpp:
 #ifndef NAVEGACION_VERSIONES_H
 #define NAVEGACION_VERSIONES_H
 

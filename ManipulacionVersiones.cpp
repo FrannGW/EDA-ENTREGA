@@ -1,4 +1,3 @@
-ManipulacionVersiones.cpp:
 #include "ManipulacionVersiones.hpp"
 #include "NavegacionVersiones.hpp"
 #include <string.h>
@@ -6,7 +5,6 @@ ManipulacionVersiones.cpp:
 #include <iostream>
 
 using namespace std;
-
 
 //version es una version valida, nuevoNumeroPadre es el prefijo para la numeracion
 //Renumera recusrivamente la version y todas sus subversiones con el nuevo prefijo

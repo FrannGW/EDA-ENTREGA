@@ -3,10 +3,14 @@
 #include "EliminacionVersiones.hpp"
 #include "MostrarVersiones.hpp"
 #include "NavegacionVersiones.hpp"
+#include "Lineas.hpp"
 #include "version.hpp"
 #include <iostream>
 #include <string.h>
 
+using namespace std;
+
+// ... (todo el resto de tu código igual)
 using namespace std;
 
 // nombre tiene que ser un string valido
@@ -82,17 +86,15 @@ bool versionPuedeSerEditada(version_struct* version) {
 
 //MENCIONAR AL PROFESOR QUE ESTO NO ESTA IMPLEMENTADO AUN, ES CODIGO QUE AUN NO FUNCIONA
 TipoRet InsertarLinea(Archivo& a, char* version, char* contenidoLinea, unsigned int nroLinea, char* error) {
-    return NO_IMPLEMENTADA;
+    return InsertarLineaModulo(a, version, contenidoLinea, nroLinea, error);
 }                               
 
 TipoRet BorrarLinea(Archivo& a, char* version, unsigned int nroLinea, char* error) {
-    // TODO: Implementar eliminación de línea
-    (void)a; (void)version; (void)nroLinea; (void)error;
-    return NO_IMPLEMENTADA;
+    return BorrarLineaModulo(a, version, nroLinea, error);
 }
 
 TipoRet MostrarTexto(Archivo a, char* version) {
-     return NO_IMPLEMENTADA;
+     return MostrarTextoModulo(a, version);
 }
 
 // Funciones no implementadas

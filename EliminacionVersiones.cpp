@@ -7,7 +7,6 @@ using namespace std;
 
 //version es un puntero a version_struct
 //liberamos de forma recusriva la version y todas sus subversiones
-// de momento aun no libero texto, falta implementar
 void eliminarVersionRecursiva(version_struct* version) {
     if (version == NULL) return;
     
@@ -18,8 +17,7 @@ void eliminarVersionRecursiva(version_struct* version) {
         subversion = siguiente;
     }
     
-    // TODO: Implementar liberación de texto cuando esté listo
-    /*
+    // LIBERAR TEXTO - IMPLEMENTACIÓN COMPLETA
     if (version->textoVersion != NULL) {
         linea* actualLinea = version->textoVersion->primeralineas;
         while (actualLinea != NULL) {
@@ -30,7 +28,6 @@ void eliminarVersionRecursiva(version_struct* version) {
         }
         delete version->textoVersion;
     }
-    */
     
     delete[] version->numero;
     delete version;
@@ -49,7 +46,7 @@ TipoRet borrarVersionModulo(Archivo& a, char* version, char* error) {
         return ERROR;
     }
 
-    // reorgqnizacion de punteros del padre/hermanos
+    // reorganizacion de punteros del padre/hermanos
     if (versionEliminar->padre == NULL) {
         version_struct* actual = a->primeraVersion;
         version_struct* anterior = NULL;

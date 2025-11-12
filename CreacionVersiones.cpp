@@ -16,12 +16,12 @@ TipoRet crearVersionModulo(Archivo& a, char* version, char* error) {
         return ERROR;
     }
 
-// Validar formato de versión
+    // Validar formato de versión
     if (!validarVersion(version, error)) {
         return ERROR;
     }
 
-// caso aparte: version ya existe - correr hermanas
+    // caso aparte: version ya existe - correr hermanas
     version_struct* versionExistente = buscarVersionRecursiva(a->primeraVersion, version);
     if (versionExistente != NULL) {
         char* padreStr = obtenerPadre(version);
@@ -39,12 +39,12 @@ TipoRet crearVersionModulo(Archivo& a, char* version, char* error) {
             return ERROR;
         }
         
-    // Correr versiones hermanas para hacer espacio
+        // Correr versiones hermanas para hacer espacio
         correrVersionesHermanas(padre, numInsertar);
         delete[] padreStr;
     }
 
-// Validar existencia del padre (excepto para versiones raíz)
+    // Validar existencia del padre (excepto para versiones raíz)
     char* ultimoPunto = strrchr(version, '.');
     if (ultimoPunto != NULL) {
         char versionPadre[100];
@@ -57,7 +57,7 @@ TipoRet crearVersionModulo(Archivo& a, char* version, char* error) {
             return ERROR;
         }
 
-    // validar que no haya huecos entre versiones hermanas
+        // validar que no haya huecos entre versiones hermanas
         int numSubversionActual = atoi(ultimoPunto + 1);
         if (numSubversionActual > 1) {
             for (int i = 1; i < numSubversionActual; i++) {
@@ -76,7 +76,7 @@ TipoRet crearVersionModulo(Archivo& a, char* version, char* error) {
     version_struct* nuevaVersion = crearVersionSimple(version);
 
     if (a->primeraVersion == NULL) {
-    // primera versión del archivo
+        // primera versión del archivo
         a->primeraVersion = nuevaVersion;
     } else {
         char* ultimoPunto = strrchr(version, '.');
@@ -110,6 +110,36 @@ TipoRet crearVersionModulo(Archivo& a, char* version, char* error) {
                     nuevaVersion->sigVersion = actual;
                 }
                 nuevaVersion->padre = padre;
+
+                // HEREDAR TEXTO DEL PADRE - CORRECCIÓN CLAVE
+                if (padre->textoVersion != NULL) {
+                    // Crear nueva estructura de texto para la subversión
+                    nuevaVersion->textoVersion = new texto;
+                    nuevaVersion->textoVersion->primeralineas = NULL;
+                    nuevaVersion->textoVersion->cantidadLineas = 0;
+                    
+                    // Copiar todas las líneas del padre
+                    linea* actualPadre = padre->textoVersion->primeralineas;
+                    linea* ultimaLinea = NULL;
+                    
+                    while (actualPadre != NULL) {
+                        linea* nuevaLinea = new linea;
+                        nuevaLinea->contenido = new char[strlen(actualPadre->contenido) + 1];
+                        strcpy(nuevaLinea->contenido, actualPadre->contenido);
+                        nuevaLinea->sig = NULL;
+                        
+                        if (nuevaVersion->textoVersion->primeralineas == NULL) {
+                            nuevaVersion->textoVersion->primeralineas = nuevaLinea;
+                            ultimaLinea = nuevaLinea;
+                        } else {
+                            ultimaLinea->sig = nuevaLinea;
+                            ultimaLinea = nuevaLinea;
+                        }
+                        
+                        nuevaVersion->textoVersion->cantidadLineas++;
+                        actualPadre = actualPadre->sig;
+                    }
+                }
             }
         } else {
             // Es versión raíz - insertar al final

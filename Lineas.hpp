@@ -1,13 +1,13 @@
-version.hpp:
-#ifndef VERSION_H
-#define VERSION_H
+#ifndef LINEAS_H
+#define LINEAS_H
 
+#include "definiciones.hpp"
 #include "estructuras_comunes.hpp"
+#include "archivo.hpp"
 
-// crea una nueva versión con el número especificado
-version_struct* crearVersionSimple(char* numero);
-
-// valida que el formato del número de versión sea correcto
-bool validarVersion(char* version, char* error);
+// Operaciones sobre líneas de texto
+TipoRet InsertarLineaModulo(Archivo& a, char* version, char* contenidoLinea, unsigned int nroLinea, char* error);
+TipoRet BorrarLineaModulo(Archivo& a, char* version, unsigned int nroLinea, char* error);
+TipoRet MostrarTextoModulo(Archivo a, char* version);
 
 #endif

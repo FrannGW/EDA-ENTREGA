@@ -1,11 +1,9 @@
-archivo.hpp:
 #ifndef ARCHIVO_H
 #define ARCHIVO_H
 
 #include "definiciones.hpp"
 #include "estructuras_comunes.hpp"
 #include "version.hpp"
-
 
 // struct principal del archivo con sus versiones
 struct nodo_archivo {

@@ -5,49 +5,40 @@
 
 using namespace std;
 
-// PRE: 
-//   - a es un archivo válido creado con CrearArchivo
-//   - version existe en el archivo y es editable (sin subversiones)
-//   - contenidoLinea no es NULL ni vacío
-//   - nroLinea entre 1 y (cantidad_líneas + 1)
-//   - error es buffer para mensajes de error
-// POST:
-//   - Inserta la línea en la posición especificada
-//   - Las líneas existentes se desplazan hacia abajo
-//   - Retorna OK si éxito, ERROR (con mensaje en buffer error) si falla
+// PRE: a es archivo válido, version existe, contenidoLinea no vacío, nroLinea entre 1 y n+1
+// POST: Inserta línea en posición especificada, retorna OK o ERROR con mensaje
 TipoRet InsertarLineaModulo(Archivo& a, char* version, char* contenidoLinea, unsigned int nroLinea, char* error) {
-    // Validar archivo existente
     if (a == NULL) {
         strcpy(error, "Archivo no existe");
         return ERROR;
     }
 
-    // Buscar la versión especificada
+    // Buscar la versión
     version_struct* versionEncontrada = buscarVersionRecursiva(a->primeraVersion, version);
     if (versionEncontrada == NULL) {
         strcpy(error, "Version no existe");
         return ERROR;
     }
 
-    // Validar que la versión no tenga subversiones (no editable según letra)
+    // Validar que no tenga subversiones
     if (versionEncontrada->primeraSubversion != NULL) {
         strcpy(error, "No se puede editar version con subversiones");
         return ERROR;
     }
 
-    // Validar contenido de línea no vacío
+    // Validar contenido
     if (contenidoLinea == NULL || strlen(contenidoLinea) == 0) {
         strcpy(error, "Linea Vacia");
         return ERROR;
     }
 
-    // Validar número de línea mínimo
+    // Validar número de línea
     if (nroLinea < 1) {
         strcpy(error, "Numero de linea invalido");
         return ERROR;
     }
 
-    // Inicializar estructura de texto si no existe
+    // Inicializar texto si no existe
     if (versionEncontrada->textoVersion == NULL) {
         versionEncontrada->textoVersion = new texto;
         versionEncontrada->textoVersion->primeralineas = NULL;
@@ -56,7 +47,7 @@ TipoRet InsertarLineaModulo(Archivo& a, char* version, char* contenidoLinea, uns
 
     texto* txt = versionEncontrada->textoVersion;
 
-    // Validar rango del número de línea (1 a n+1 según letra)
+    // Validar rango (1 a n+1)
     if (nroLinea > txt->cantidadLineas + 1) {
         strcpy(error, "Número de línea fuera de rango");
         return ERROR;
@@ -68,29 +59,12 @@ TipoRet InsertarLineaModulo(Archivo& a, char* version, char* contenidoLinea, uns
     strcpy(nuevaLinea->contenido, contenidoLinea);
     nuevaLinea->sig = NULL;
 
-    // Caso 1: Insertar al principio (nroLinea == 1)
+    // Insertar en posición correcta
     if (nroLinea == 1) {
         nuevaLinea->sig = txt->primeralineas;
         txt->primeralineas = nuevaLinea;
-    } 
-    // Caso 2: Insertar al final (nroLinea == cantidadLineas + 1)
-    else if (nroLinea == txt->cantidadLineas + 1) {
+    } else {
         linea* actual = txt->primeralineas;
-        // Avanzar hasta la última línea
-        while (actual != NULL && actual->sig != NULL) {
-            actual = actual->sig;
-        }
-        if (actual == NULL) {
-            // Lista vacía - este caso no debería pasar por la validación anterior
-            txt->primeralineas = nuevaLinea;
-        } else {
-            actual->sig = nuevaLinea;
-        }
-    }
-    // Caso 3: Insertar en medio
-    else {
-        linea* actual = txt->primeralineas;
-        // Avanzar hasta la posición anterior a donde insertaremos
         for (unsigned int i = 1; i < nroLinea - 1; i++) {
             actual = actual->sig;
         }
@@ -98,41 +72,29 @@ TipoRet InsertarLineaModulo(Archivo& a, char* version, char* contenidoLinea, uns
         actual->sig = nuevaLinea;
     }
 
-    // Actualizar contador de líneas
     txt->cantidadLineas++;
     return OK;
 }
 
-// PRE:
-//   - a es un archivo válido creado con CrearArchivo
-//   - version existe en el archivo y es editable (sin subversiones)
-//   - nroLinea entre 1 y cantidad_líneas
-//   - error es buffer para mensajes de error
-// POST:
-//   - Elimina la línea en la posición especificada
-//   - Las líneas siguientes se desplazan hacia arriba
-//   - Retorna OK si éxito, ERROR (con mensaje en buffer error) si falla
+// PRE: a es archivo válido, version existe, nroLinea entre 1 y n
+// POST: Elimina línea en posición especificada, retorna OK o ERROR con mensaje
 TipoRet BorrarLineaModulo(Archivo& a, char* version, unsigned int nroLinea, char* error) {
-    // Validar archivo existente
     if (a == NULL) {
         strcpy(error, "Archivo no existe");
         return ERROR;
     }
 
-    // Buscar la versión especificada
     version_struct* versionEncontrada = buscarVersionRecursiva(a->primeraVersion, version);
     if (versionEncontrada == NULL) {
         strcpy(error, "Version no existe");
         return ERROR;
     }
 
-    // Validar que la versión no tenga subversiones (no editable según letra)
     if (versionEncontrada->primeraSubversion != NULL) {
         strcpy(error, "No se puede editar version con subversiones");
         return ERROR;
     }
 
-    // Validar que exista texto en la versión
     if (versionEncontrada->textoVersion == NULL || 
         versionEncontrada->textoVersion->primeralineas == NULL) {
         strcpy(error, "El texto de la version esta vacio");
@@ -141,7 +103,6 @@ TipoRet BorrarLineaModulo(Archivo& a, char* version, unsigned int nroLinea, char
 
     texto* txt = versionEncontrada->textoVersion;
 
-    // Validar rango del número de línea (1 a n según letra)
     if (nroLinea < 1 || nroLinea > txt->cantidadLineas) {
         strcpy(error, "Número de línea fuera de rango");
         return ERROR;
@@ -150,37 +111,62 @@ TipoRet BorrarLineaModulo(Archivo& a, char* version, unsigned int nroLinea, char
     linea* actual = txt->primeralineas;
     linea* anterior = NULL;
 
-    // Caso 1: Eliminar primera línea
     if (nroLinea == 1) {
         txt->primeralineas = actual->sig;
         delete[] actual->contenido;
         delete actual;
-    }
-    // Caso 2: Eliminar línea del medio o final
-    else {
-        // Avanzar hasta la línea a eliminar
+    } else {
         for (unsigned int i = 1; i < nroLinea; i++) {
             anterior = actual;
             actual = actual->sig;
         }
 
-        // Reorganizar punteros para saltar la línea a eliminar
         if (anterior != NULL) {
             anterior->sig = actual->sig;
         }
 
-        // Liberar memoria de la línea eliminada
         delete[] actual->contenido;
         delete actual;
     }
 
-    // Actualizar contador de líneas
     txt->cantidadLineas--;
 
-    // Si no quedan líneas, limpiar la estructura de texto
     if (txt->cantidadLineas == 0) {
         txt->primeralineas = NULL;
     }
 
+    return OK;
+}
+
+// PRE: a es archivo válido, version existe
+// POST: Muestra texto completo de la versión
+TipoRet MostrarTextoModulo(Archivo a, char* version) {
+    if (a == NULL) {
+        return ERROR;
+    }
+
+    version_struct* versionEncontrada = buscarVersionRecursiva(a->primeraVersion, version);
+    if (versionEncontrada == NULL) {
+        return ERROR;
+    }
+    
+    cout << a->nombre << " - " << version << endl;
+    cout << endl;
+
+    if (versionEncontrada->textoVersion == NULL || 
+        versionEncontrada->textoVersion->primeralineas == NULL) {
+        cout << "No contiene lineas" << endl;
+        return OK;
+    }
+
+    linea* actual = versionEncontrada->textoVersion->primeralineas;
+    unsigned int numeroLinea = 1;
+
+    while (actual != NULL) {
+        cout << numeroLinea << "\t" << actual->contenido << endl;
+        actual = actual->sig;
+        numeroLinea++;
+    }
+    
     return OK;
 }
